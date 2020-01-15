@@ -7,6 +7,7 @@ import currentUser from './store-current-user'
 import localMentors from './store-local-mentors'
 import localStudents from './store-local-students'
 import questions from './store-questions'
+import currentInfo from './store-info'
 
 Vue.use(Vuex)
 
@@ -25,7 +26,8 @@ export default function (/* { ssrContext } */) {
       currentUser: currentUser,
       localMentors: localMentors,
       localStudents: localStudents,
-      questions: questions
+      questions: questions,
+      currentInfo: currentInfo
     },
     plugins: [persistePlugin],
 

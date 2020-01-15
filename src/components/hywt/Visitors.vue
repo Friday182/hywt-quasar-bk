@@ -1,7 +1,7 @@
 <template>
   <div class="q-px-sm q-mt-lg">
     <q-table
-      title="Logs Table"
+      title="访客记录"
       :data="tableData"
       :columns="columns"
       :visible-columns="visibleColumns"
@@ -17,7 +17,7 @@
     >
       <template v-slot:top="props">
         <div class="col-2 q-table__title">
-          Your Students
+          访客记录
         </div>
         <q-space />
         <q-btn
@@ -52,12 +52,10 @@
 </template>
 
 <script type="text/javascript">
-import { TASK_LOGS_QUERY } from '../../graphql/queries'
-import { DEL_LOG_MUTATION } from '../../graphql/mutations'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'LogTable',
+  name: 'Visitors',
   components: {
     'alert-msg': require('components/common/AlertMsg.vue').default
   },
@@ -65,14 +63,6 @@ export default {
     studentId: {
       type: Number,
       default: 0
-    },
-    newLog: {
-      type: Boolean,
-      default: false
-    },
-    numLog: {
-      type: Number,
-      default: 10
     }
   },
   data () {
@@ -165,25 +155,17 @@ export default {
       ],
       taskLogs: [],
       tableData: [],
-      loading: true,
-      skipQueryTasklog: true
+      loading: true
     }
   },
   computed: {
-    ...mapGetters('currentUser', ['currentUser']),
+    ...mapGetters('currentInfo', ['currentInfo']),
     isDeletable: function () {
-      return (this.currentUser.sessionLogin === 'mentor')
+      return (this.currentInfo.userRole === 'admin')
     }
   },
   mounted () {
-    console.log('task log table mounted - ', this.studentId)
-    if (this.newLog === true) {
-      this.skipQueryTasklog = true
-      this.$apollo.queries.taskLogs.refetch({
-        userId: this.studentId,
-        numLog: this.numLog
-      })
-    }
+    console.log('task log table mounted - ')
   },
   destroyed () {
     console.log('task log table destroied')
@@ -215,49 +197,10 @@ export default {
     },
     toDeleteLog (logId) {
       console.log('delete: ' + logId)
-      this.$apollo
-        .mutate({
-          mutation: DEL_LOG_MUTATION,
-          variables: {
-            logId: logId
-          }
-        })
-        .then(response => {
-          if (response.data.delLog.ok === false) {
-            this.alertMsg = 'Update stickers failed, please report error to Support@DecomTechnology.com.'
-            this.alert = true
-          } else {
-            for (let i = 0; i < this.tableData.length; i++) {
-              if (this.tableData[i].id === logId) {
-                this.tableData.splice(i, 1)
-              }
-            }
-          }
-        })
     },
     alertClose () {
       this.alert = false
       this.alertMsg = ''
-    }
-  },
-  apollo: {
-    taskLogs: {
-      query: TASK_LOGS_QUERY,
-      variables () {
-        return {
-          userId: this.studentId,
-          numLog: this.numLog
-        }
-      },
-      error (error) {
-        console.error('We\'ve got an error!', error)
-      },
-      skip () {
-        return this.skipQueryTasklog
-      },
-      result (data, key) {
-        this.updateTasklog(data.data.taskLogs)
-      }
     }
   }
 }

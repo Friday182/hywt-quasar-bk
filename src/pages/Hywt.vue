@@ -1,65 +1,60 @@
 <template>
   <el-tabs
-    v-model="editableTabsValue"
+    v-model="curTab"
     type="border-card"
     editable
     @edit="handleTabsEdit"
   >
     <el-tab-pane
-      v-for="(item, index) in editableTabs"
+      v-for="(item, index) in tabs"
       :key="index"
       :label="item.title"
       :name="item.name"
-    />
+    >
+      <sub-page
+        :index="item.name"
+      />
+    </el-tab-pane>
   </el-tabs>
 </template>
 
 <script>
+import { mapGetters, mapMutations } from 'vuex'
+
 export default {
+  name: 'Hywt',
+  components: {
+    'sub-page': require('components/hywt/SubPage.vue').default
+  },
   data () {
     return {
-      editableTabsValue: '2',
-      editableTabs: [
-        {
-          title: 'Tab 1',
-          name: '1',
-          content: 'Tab 1 content'
-        },
-        {
-          title: 'Tab 2',
-          name: '2',
-          content: 'Tab 2 content'
-        }],
-      tabIndex: 2
+      curTab: ''
+    }
+  },
+  computed: {
+    ...mapGetters('currentInfo', ['currentInfo']),
+
+    loginRole: function () {
+      return this.currentInfo.userRole
+    },
+    tabs: function () {
+      return this.currentInfo.tabs
+    },
+    activeTab: function () {
+      return this.currentInfo.activeTab
     }
   },
   methods: {
-    handleTabsEdit (targetName, action) {
-      if (action === 'add') {
-        let newTabName = ++this.tabIndex + ''
-        this.editableTabs.push({
-          title: 'New Tab',
-          name: newTabName,
-          content: 'New Tab content'
-        })
-        this.editableTabsValue = newTabName
-      }
-      if (action === 'remove') {
-        let tabs = this.editableTabs
-        let activeName = this.editableTabsValue
-        if (activeName === targetName) {
-          tabs.forEach((tab, index) => {
-            if (tab.name === targetName) {
-              let nextTab = tabs[index + 1] || tabs[index - 1]
-              if (nextTab) {
-                activeName = nextTab.name
-              }
-            }
-          })
-        }
+    ...mapMutations('currentInfo', ['removeTab']),
 
-        this.editableTabsValue = activeName
-        this.editableTabs = tabs.filter(tab => tab.name !== targetName)
+    handleTabsEdit (targetName, action) {
+      console.log('in edit - ', targetName, action)
+      if (action === 'remove') {
+        this.tabs.forEach((tab, index) => {
+          if (tab.name === targetName) {
+            this.removeTab(tab)
+          }
+        })
       }
     }
   }
