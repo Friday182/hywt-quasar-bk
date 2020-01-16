@@ -1,13 +1,13 @@
 <template>
   <el-tabs
-    v-model="curTab"
+    v-model="activeTab"
     type="border-card"
     editable
     @edit="handleTabsEdit"
   >
     <el-tab-pane
-      v-for="(item, index) in tabs"
-      :key="index"
+      v-for="item in tabs"
+      :key="item.name"
       :label="item.title"
       :name="item.name"
     >
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 
 export default {
   name: 'Hywt',
@@ -28,11 +28,12 @@ export default {
   },
   data () {
     return {
-      curTab: ''
+      curTab: '1-1'
     }
   },
   computed: {
     ...mapGetters('currentInfo', ['currentInfo']),
+    ...mapMutations('currentInfo', ['setActiveTab']),
 
     loginRole: function () {
       return this.currentInfo.userRole
@@ -40,12 +41,18 @@ export default {
     tabs: function () {
       return this.currentInfo.tabs
     },
-    activeTab: function () {
-      return this.currentInfo.activeTab
+    activeTab: {
+      get: function () {
+        return this.currentInfo.activeTab
+      },
+      set: function (newValue) {
+        console.log('set active tab - ', newValue)
+        // this.setActiveTab(newValue)
+      }
     }
   },
   methods: {
-    ...mapMutations('currentInfo', ['removeTab']),
+    ...mapActions('currentInfo', ['removeTab']),
 
     handleTabsEdit (targetName, action) {
       console.log('in edit - ', targetName, action)

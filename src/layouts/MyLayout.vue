@@ -65,7 +65,7 @@
     </q-header>
     <q-drawer
       v-model="leftDrawerOpen"
-      :width="250"
+      :width="180"
       bordered
       :content-style="{ backgroundColor: '#2020C0' }"
     >
@@ -110,6 +110,10 @@
           <i class="el-icon-setting" />
           <span slot="title"> 设备管理 </span>
         </el-menu-item>
+        <el-menu-item index="5">
+          <i class="el-icon-edit" />
+          <span slot="title"> 测试输入 </span>
+        </el-menu-item>
       </el-menu>
     </q-drawer>
     <q-page-container>
@@ -153,7 +157,15 @@ export default {
       leftDrawerOpen: false, // this.$q.platform.is.desktop,
       showStudentHome: false,
       signinDialog: false,
-      showLogin: false
+      showLogin: false,
+      allTabs: [
+        { name: '1-1', title: '访客信息' },
+        { name: '1-2', title: '人证快递柜' },
+        { name: '2', title: '车辆出入记录' },
+        { name: '3', title: '快递信息管理' },
+        { name: '4', title: '设备管理' },
+        { name: '5', title: '测试输入' }
+      ]
     }
   },
   computed: {
@@ -205,10 +217,17 @@ export default {
     handleSelect (index, indexPath) {
       console.log(index, indexPath)
       // set current menu index into store
-      this.addTab({
-        name: index,
-        title: 'defaultTitle'
-      })
+      for (let i = 0; i < this.allTabs.length; i++) {
+        if (index === this.allTabs[i].name) {
+          this.addTab(this.allTabs[i])
+          break
+        }
+      }
+      // this.allTabs.forEach(element => {
+      // if (index === element.name) {
+      // this.addTab(element)
+      // }
+      // })
     },
     toSigninup () {
       console.log('set signin to true')

@@ -1,5 +1,6 @@
 <template>
-  <div class="q-px-sm q-mt-lg">
+  <div>
+    <search-bar />
     <q-table
       title="访客记录"
       :data="tableData"
@@ -17,9 +18,27 @@
     >
       <template v-slot:top="props">
         <div class="col-2 q-table__title">
-          访客记录
+          <q-chip
+            size="xs"
+            text-color="blue"
+            style="font: 50% Cursive;"
+          >
+            访客记录
+          </q-chip>
         </div>
         <q-space />
+        <q-select
+          v-model="visibleColumns"
+          multiple
+          dense
+          options-dense
+          display-value="选择显示列"
+          emit-value
+          map-options
+          :options="columns"
+          option-value="name"
+          style="min-width: 150px"
+        />
         <q-btn
           class="q-ml-md"
           flat
@@ -39,7 +58,7 @@
           v-if="isDeletable"
           flat
           icon="delete"
-          @click="toDeleteLog(props.row.id)"
+          @click="toDeleteLog(props.row.datetime, props.row.deviceid)"
         />
       </q-td>
     </q-table>
@@ -52,12 +71,13 @@
 </template>
 
 <script type="text/javascript">
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 
 export default {
   name: 'Visitors',
   components: {
-    'alert-msg': require('components/common/AlertMsg.vue').default
+    'alert-msg': require('components/common/AlertMsg.vue').default,
+    'search-bar': require('components/hywt/SearchBar.vue').default
   },
   props: {
     studentId: {
@@ -67,82 +87,76 @@ export default {
   },
   data () {
     return {
+      isDeletable: true,
       alert: false,
       alertMsg: '',
       pagination: {
         page: 0,
         rowsPerPage: 10
       },
-      visibleColumns: ['name', 'date', 'taskid', 'totalque', 'numwrong', 'correctperc', 'totalsec', 'avgsec', 'stdsec', 'score', 'action'],
+      visibleColumns: ['datetime', 'name', 'gender', 'ethnic', 'id', 'dob', 'block', 'enter', 'deviceid'],
       columns: [
+        {
+          name: 'datetime',
+          align: 'center',
+          label: '访问时间',
+          field: 'datetime',
+          sortable: true
+        },
         {
           name: 'name',
           align: 'center',
-          label: 'Name',
+          label: '姓名',
           field: 'name',
           sortable: true
         },
         {
-          name: 'date',
+          name: 'gender',
           align: 'center',
-          label: 'Date',
-          field: 'date',
+          label: '性别',
+          field: 'gender',
           sortable: true
         },
         {
-          name: 'taskid',
+          name: 'ethnic',
           align: 'center',
-          label: 'Task Id',
-          field: 'taskid',
+          label: '民族',
+          field: 'ethnic',
           sortable: true
         },
         {
-          name: 'totalque',
+          name: 'id',
           align: 'center',
-          label: 'Number Questions',
-          field: 'totalque',
+          label: '身份证号',
+          field: 'id',
           sortable: true
         },
         {
-          name: 'numwrong ',
+          name: 'dob',
           align: 'center',
-          label: 'Wrong  Number',
-          field: 'numwrong',
+          label: '生日',
+          field: 'dob',
           sortable: true
         },
         {
-          name: 'correctperc',
+          name: 'block',
           align: 'center',
-          label: 'Correct  Percentage',
-          field: 'correctperc',
+          label: '出入社区',
+          field: 'block',
           sortable: true
         },
         {
-          name: 'totalsec',
+          name: 'enter',
           align: 'center',
-          label: 'Total Sec',
-          field: 'totalsec',
+          label: '通行类型',
+          field: 'enter',
           sortable: true
         },
         {
-          name: 'avgsec',
+          name: 'deviceid',
           align: 'center',
-          label: 'Sec/Question',
-          field: 'avgsec',
-          sortable: true
-        },
-        {
-          name: 'stdsec',
-          align: 'center',
-          label: 'Reference Sec/Que',
-          field: 'stdsec',
-          sortable: true
-        },
-        {
-          name: 'score',
-          align: 'center',
-          label: 'Score',
-          field: 'score',
+          label: '设备号',
+          field: 'deviceid',
           sortable: true
         },
         {
@@ -153,15 +167,13 @@ export default {
           sortable: false
         }
       ],
-      taskLogs: [],
-      tableData: [],
-      loading: true
+      loading: false
     }
   },
   computed: {
-    ...mapGetters('currentInfo', ['currentInfo']),
-    isDeletable: function () {
-      return (this.currentInfo.userRole === 'admin')
+    ...mapGetters('visitor', ['visitor']),
+    tableData: function () {
+      return (this.visitor.visitorLog)
     }
   },
   mounted () {
@@ -171,32 +183,13 @@ export default {
     console.log('task log table destroied')
   },
   methods: {
-    updateTasklog (newData) {
-      this.loading = false
-      if (newData.length > 0) {
-        console.log('Read task log updated - ' + newData.length)
-        this.tableData = []
-        for (let i = 0; i < newData.length; i++) {
-          this.tableData.push({
-            id: newData[i].id,
-            name: newData[i].userName,
-            date: String(newData[i].createDate).slice(0, 19),
-            taskid: newData[i].taskId,
-            totalque: newData[i].totalQue,
-            numwrong: newData[i].firstWrong,
-            correctperc: newData[i].correctPerc,
-            totalsec: newData[i].totalSec,
-            avgsec: newData[i].avgSec,
-            stdsec: newData[i].avgStdSec,
-            score: newData[i].totalScore
-          })
+    ...mapMutations('visitor', ['removeVisitor']),
+    toDeleteLog (dt, di) {
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].datetime === dt && this.tableData[i].deviceid === di) {
+          this.removeVisitor(this.tableData[i])
         }
-      } else {
-        console.log('Read task log failed!')
       }
-    },
-    toDeleteLog (logId) {
-      console.log('delete: ' + logId)
     },
     alertClose () {
       this.alert = false

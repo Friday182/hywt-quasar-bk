@@ -8,6 +8,7 @@ import localMentors from './store-local-mentors'
 import localStudents from './store-local-students'
 import questions from './store-questions'
 import currentInfo from './store-info'
+import visitor from './store-visitor'
 
 Vue.use(Vuex)
 
@@ -27,7 +28,8 @@ export default function (/* { ssrContext } */) {
       localMentors: localMentors,
       localStudents: localStudents,
       questions: questions,
-      currentInfo: currentInfo
+      currentInfo: currentInfo,
+      visitor: visitor
     },
     plugins: [persistePlugin],
 

@@ -7,7 +7,7 @@ const state = {
     userRole: '',
     tabs: [{
       name: '1-1',
-      title: 'defaultTitle'
+      title: '访客信息'
     }],
     activeTab: '1-1'
   }
@@ -23,16 +23,16 @@ const mutations = {
     state.currentInfo.tabs.forEach((tab, index) => {
       if (tab.name === payload.name) {
         // tab already in the list
-        state.currentInfo.activeTab = payload.name
         exist = true
       }
     })
     if (exist === false) {
       state.currentInfo.tabs.push(payload)
     }
+    state.currentInfo.activeTab = payload.name
   },
 
-  removeTab (state, payload) {
+  doRemoveTab (state, payload) {
     console.log('removetab - ', payload.name)
     for (let i = 0; i < state.currentInfo.tabs.length; i++) {
       if (state.currentInfo.tabs[i].name === payload.name) {
@@ -40,15 +40,26 @@ const mutations = {
         console.log('new tabs', JSON.stringify(state.currentInfo.tabs))
         if (i > 0) {
           state.currentInfo.activeTab = state.currentInfo.tabs[i - 1].name
+        } else {
+          if (state.currentInfo.tabs.length > 0) {
+            state.currentInfo.activeTab = state.currentInfo.tabs[0].name
+          }
         }
       }
     }
+  },
+
+  setActiveTab (state, payload) {
+    state.currentInfo.activeTab = payload
   }
 }
 
 const actions = {
   updateInfo ({ commit }, payload) {
     commit('updateInfo', payload)
+  },
+  removeTab ({ commit }, payload) {
+    commit('doRemoveTab', payload)
   }
 }
 

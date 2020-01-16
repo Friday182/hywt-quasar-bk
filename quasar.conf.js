@@ -81,6 +81,7 @@ module.exports = function (ctx) {
         'QRouteTab',
         'QScrollArea',
         'QSeparator',
+        'QSelect',
         'QSpace',
         'QSplitter',
         'QSpinnerHourglass',
@@ -143,7 +144,7 @@ module.exports = function (ctx) {
     devServer: {
       // https: true,
       host: 'localhost',
-      port: 8080,
+      port: 8089,
       open: true // opens browser window automatically
     },
 

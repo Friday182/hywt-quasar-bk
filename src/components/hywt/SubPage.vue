@@ -1,10 +1,10 @@
 <template>
   <div class="q-px-sm">
     <div v-if="index==='1-1'">
-      <not-available />
+      <visitors />
     </div>
     <div v-else-if="index==='1-2'">
-      <visitors />
+      <cert-info />
     </div>
     <div v-else-if="index==='2'">
       <not-available />
@@ -15,6 +15,9 @@
     <div v-else-if="index==='4'">
       <not-available />
     </div>
+    <div v-else-if="index==='5'">
+      <test-page />
+    </div>
   </div>
 </template>
 
@@ -23,7 +26,9 @@
 export default {
   name: 'SubPage',
   components: {
+    'test-page': require('components/hywt/TestPage.vue').default,
     'not-available': require('components/hywt/NotAvailable.vue').default,
+    'cert-info': require('components/hywt/CertInfo.vue').default,
     'visitors': require('components/hywt/Visitors.vue').default
   },
   props: {
