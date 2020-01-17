@@ -54,6 +54,14 @@
         align="left"
         style="width:50%"
       >
+        <q-btn
+          label="signup"
+          @click="testSignup"
+        />
+        <q-btn
+          label="login"
+          @click="testLogin"
+        />
         <pre>
           {{ info }}
         </pre>
@@ -64,6 +72,7 @@
 
 <script type="text/javascript">
 import { mapMutations } from 'vuex'
+import { signup, login, addRecord } from '../../api/api'
 
 export default {
   name: 'StudentProfile',
@@ -131,12 +140,49 @@ export default {
     },
     postData () {
       console.log('post data')
+      addRecord({ 'vistor': this.jsonData }).then(response => (this.info = response))
+    },
+    testSignup () {
+      console.log('signup')
+      signup({ 'username': this.name, 'password': 'test123' }).then(response => (this.info = response))
+      /* let config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        withCredentials: true
+      }
       this.$axios
-        .post('http://127.0.0.1:8082/api/logout', { 'jsondata': JSON.stringify(this.jsonData) })
+        .post('http://127.0.0.1:8082/signup', { 'username': this.name, 'password': 'test123' }, config)
         .then(response => (this.info = response))
+      */
+    },
+    testLogin () {
+      console.log('login')
+      /* let config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        withCredentials: true
+      }
+      this.$axios
+        .post('http://127.0.0.1:8082/login', { 'username': this.name, 'password': 'test123' }, config)
+        .then(response => (this.info = response))
+    }
+    */
+      login({ 'username': this.name, 'password': 'test123' })
+        .then(response => {
+          this.info = response
+          if (response.data.code === 200) {
+            localStorage.setItem('access_token', response.data.token)
+            console.log('set token ok - ', response.data.token)
+          } else {
+            console.log('not ok')
+          }
+        })
     }
   }
 }
+
 </script>
 
 <style>
