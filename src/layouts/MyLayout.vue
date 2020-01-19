@@ -199,7 +199,7 @@ export default {
     this.manageLayout()
   },
   methods: {
-    ...mapMutations('currentInfo', ['addTab']),
+    ...mapMutations('currentInfo', ['addTab', 'updateInfo']),
 
     manageLayout () {
       if (this.$route.path !== '/Hywt') {

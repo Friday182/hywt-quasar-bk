@@ -20,6 +20,7 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { createSocket } from '../api/websocket'
 
 export default {
   name: 'Hywt',
@@ -51,6 +52,14 @@ export default {
       }
     }
   },
+  mounted () {
+    createSocket()
+    // listen incoming message
+    window.addEventListener('onmessageWS', this.processData)
+  },
+  beforeDestroy () {
+    window.removeEventListener('onmessageWS', this.processData)
+  },
   methods: {
     ...mapActions('currentInfo', ['removeTab']),
 
@@ -63,6 +72,14 @@ export default {
           }
         })
       }
+    },
+    processData (e) {
+      let tmp = e.detail.data.data
+      // console.log(tmp)
+      let tmp1 = JSON.parse(tmp)
+      console.log(tmp1)
+      let tmp2 = JSON.parse(tmp1.data)
+      console.log(tmp2.dob)
     }
   }
 }

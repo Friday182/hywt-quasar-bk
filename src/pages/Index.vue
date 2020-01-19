@@ -95,7 +95,7 @@
 
 <script>
 import { login } from '../api/api'
-import { mapActions } from 'vuex'
+import { mapMutations } from 'vuex'
 
 export default {
   components: {
@@ -124,19 +124,31 @@ export default {
     this.windowHeight = window.innerHeight + 'px'
   },
   methods: {
-    ...mapActions('currentUser', ['updateUser']),
+    ...mapMutations('currentInfo', ['updateInfo']),
     toLogin () {
-      this.updateUser({
-        id: 1,
-        name: 'test',
-        contacts: '',
-        sessionLogin: 'test'
-      })
-      // this.$router.push({ path: '/Hywt' })
-      this.$router.push({ path: '/Hywt' })
       login(this.loginForm)
-        .then(res => {
-          this.$router.push({ path: '/Hywt' })
+        .then(response => {
+          this.info = response
+          if (response.data.code === 200) {
+            // Store token
+            localStorage.setItem('access_token', response.data.token)
+            this.updateInfo({
+              menuIdx: '1-1',
+              userName: this.loginForm.username,
+              userRole: 'test',
+              tabs: [{
+                name: '1-1',
+                title: '访客信息'
+              }],
+              activeTab: '1-1'
+            })
+            // todo: set up websocket connection
+
+            console.log('set token ok - ', response.data.token)
+            this.$router.push({ path: '/Hywt' })
+          } else {
+            console.log('not ok')
+          }
         })
         .catch(error => {
           console.log(error)

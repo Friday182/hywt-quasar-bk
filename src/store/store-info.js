@@ -49,6 +49,10 @@ const mutations = {
     }
   },
 
+  setUserRole (state, payload) {
+    state.currentInfo.userRole = payload
+  },
+
   setActiveTab (state, payload) {
     state.currentInfo.activeTab = payload
   }
