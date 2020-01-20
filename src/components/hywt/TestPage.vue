@@ -10,7 +10,7 @@
           no-caps
           glossy
           color="blue"
-          label="Submit"
+          label="提交"
           size="lg"
           @click="changeDone(0)"
         />
@@ -32,6 +32,7 @@
         <q-input
           v-model="id"
           label="身份证号"
+          class="q-mb-md"
           dense
         />
         <el-date-picker
@@ -42,26 +43,38 @@
           :picker-options="pickerOptions"
         />
       </q-card-section>
+      <q-separator />
       <q-card-section
         align="left"
         style="width:50%"
       >
+        输入JSON数据：
         <pre>
           {{ jsonData }}
         </pre>
+      </q-card-section>
+      <q-separator />
+      <q-card-section
+        align="left"
+        style="width:50%"
+      >
+        <q-btn
+          label="测试注册"
+          style="color:red"
+          @click="testSignup"
+        />
+        <q-btn
+          class="q-ml-md"
+          label="测试登录"
+          style="color:red"
+          @click="testLogin"
+        />
       </q-card-section>
       <q-card-section
         align="left"
         style="width:50%"
       >
-        <q-btn
-          label="signup"
-          @click="testSignup"
-        />
-        <q-btn
-          label="login"
-          @click="testLogin"
-        />
+        服务器返回数据：
         <pre>
           {{ info }}
         </pre>
@@ -124,7 +137,7 @@ export default {
           block: '高大上小区',
           enter: '进入',
           deviceid: 'device-123',
-          datetime: this.selDatetime
+          datetime: this.value2
         }
       )
     }

@@ -178,6 +178,7 @@ export default {
   },
   mounted () {
     console.log('task log table mounted - ')
+    setInterval(this.testFun, 8000)
   },
   destroyed () {
     console.log('task log table destroied')
@@ -190,6 +191,9 @@ export default {
           this.removeVisitor(this.tableData[i])
         }
       }
+    },
+    testFun () {
+      console.log('current visitorLog length - ', this.visitor.visitorLog.length)
     },
     alertClose () {
       this.alert = false

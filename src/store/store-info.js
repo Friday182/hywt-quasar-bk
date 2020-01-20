@@ -9,7 +9,8 @@ const state = {
       name: '1-1',
       title: '访客信息'
     }],
-    activeTab: '1-1'
+    activeTab: '1-1',
+    wsOk: false
   }
 }
 

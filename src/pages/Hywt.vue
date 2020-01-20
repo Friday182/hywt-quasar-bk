@@ -55,13 +55,14 @@ export default {
   mounted () {
     createSocket()
     // listen incoming message
-    window.addEventListener('onmessageWS', this.processData)
+    // window.addEventListener('onmessageWS', this.processData)
   },
   beforeDestroy () {
-    window.removeEventListener('onmessageWS', this.processData)
+    // window.removeEventListener('onmessageWS', this.processData)
   },
   methods: {
     ...mapActions('currentInfo', ['removeTab']),
+    ...mapMutations('visitor', ['addVisitor']),
 
     handleTabsEdit (targetName, action) {
       console.log('in edit - ', targetName, action)
@@ -77,9 +78,20 @@ export default {
       let tmp = e.detail.data.data
       // console.log(tmp)
       let tmp1 = JSON.parse(tmp)
-      console.log(tmp1)
+      // console.log(tmp1)
       let tmp2 = JSON.parse(tmp1.data)
       console.log(tmp2.dob)
+      this.addVisitor({
+        name: tmp2.name,
+        gender: tmp2.gender,
+        ethnic: tmp2.ethnic,
+        id: tmp2.id,
+        dob: tmp2.dob,
+        block: tmp2.block,
+        enter: tmp2.enter,
+        deviceid: tmp2.deviceid,
+        datetime: tmp2.datetime
+      })
     }
   }
 }

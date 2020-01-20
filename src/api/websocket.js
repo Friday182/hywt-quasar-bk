@@ -1,10 +1,12 @@
 // const WSS_URL = `wss://wss.xxxx.com/ws?appid=xxx`
-const WS_URL = `ws://127.0.0.1:8082/ws`
+const WS_URL = `ws://127.0.0.1:8082/api/ws`
+// const WS_URL = `ws://www.transfertestmaster.com/ws`
 let Socket = ''
 let setIntervalWesocketPush = null
 
 export function createSocket () {
   console.log('start create websocket')
+
   if (!Socket) {
     Socket = new WebSocket(WS_URL)
     Socket.onopen = onopenWS
@@ -17,10 +19,17 @@ export function createSocket () {
 }
 // send heartbeat
 export function onopenWS () {
+  sessionStorage.setItem('ws-status', 'OK')
+  // When connected, client get default data at behind for all pages
+  // this will reduce the loading time for all the pages
+  sendWSPush({
+    'mType': 'DEFAULT'
+  })
   sendPing()
 }
 export function onerrorWS () {
   clearInterval(setIntervalWesocketPush)
+  sessionStorage.setItem('ws-status', 'NOK')
   Socket.close()
   createSocket()
 }
@@ -33,12 +42,7 @@ export function onmessageWS (e) {
   }))
 }
 
-export function sendWSPush (eventTypeArr) {
-  const obj = {
-    appId: 'airShip',
-    cover: 0,
-    event: eventTypeArr
-  }
+export function sendWSPush (obj) {
   if (Socket !== null && Socket.readyState === 3) {
     Socket.close()
     createSocket()
@@ -52,6 +56,7 @@ export function sendWSPush (eventTypeArr) {
 }
 export function oncloseWS () {
   clearInterval(setIntervalWesocketPush)
+  sessionStorage.setItem('ws-status', 'NOK')
   console.log('websocket已断开')
 }
 export function sendPing () {

@@ -4,7 +4,7 @@
       <visitors />
     </div>
     <div v-else-if="index==='1-2'">
-      <cert-info />
+      <not-available />
     </div>
     <div v-else-if="index==='2'">
       <not-available />
@@ -28,7 +28,7 @@ export default {
   components: {
     'test-page': require('components/hywt/TestPage.vue').default,
     'not-available': require('components/hywt/NotAvailable.vue').default,
-    'cert-info': require('components/hywt/CertInfo.vue').default,
+    // 'cert-info': require('components/hywt/CertInfo.vue').default,
     'visitors': require('components/hywt/Visitors.vue').default
   },
   props: {

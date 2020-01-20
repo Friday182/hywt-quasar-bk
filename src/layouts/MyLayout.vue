@@ -75,7 +75,7 @@
         class="el-menu-vertical-demo"
         background-color="#2020C0"
         text-color="#fff"
-        active-text-color="#ffd04b"
+        active-text-color="#ff804b"
         @open="handleOpen"
         @close="handleClose"
         @select="handleSelect"

@@ -4,6 +4,7 @@
       <div class="col-2 q-mr-sm">
         <el-select
           v-model="province"
+          class="myClass"
           filterable
           size="mini"
           placeholder="所属省份"
@@ -37,6 +38,7 @@
       <div class="col-2 q-mr-sm">
         <el-input
           v-model="inId"
+          class="myClass"
           size="mini"
           placeholder="身份证号码"
           clearable
@@ -44,7 +46,7 @@
       </div>
       <div class="col-2 q-mr-sm">
         <el-input
-          v-model="inId"
+          v-model="block"
           size="mini"
           placeholder="社区名称"
           clearable
@@ -54,7 +56,7 @@
     <div class="row q-my-sm">
       <div class="col-4 q-mr-sm">
         <el-date-picker
-          v-model="value2"
+          v-model="period"
           size="mini"
           type="daterange"
           align="right"
@@ -82,7 +84,7 @@
           dense
           color="primary"
           style="font: 100% Cursive"
-          @click="selected()"
+          @click="clearForm()"
         />
       </div>
     </div>
@@ -90,6 +92,8 @@
 </template>
 
 <script>
+import { sendWSPush } from '../../api/websocket'
+
 export default {
   name: 'Error404',
   data () {
@@ -97,6 +101,7 @@ export default {
       inId: '',
       city: '',
       province: '',
+      block: '',
       provinceOptions: [
         { value: '选项1', label: '新疆' },
         { value: '选项2', label: '甘肃' },
@@ -138,19 +143,50 @@ export default {
           }
         }]
       },
-      value2: ''
+      period: ''
     }
   },
   methods: {
-    select () {
-      console.log('start search ...')
+    selected () {
+      console.log('start search ...', this.period)
+      if (sessionStorage.getItem('ws-status') === 'OK') {
+        sendWSPush({
+          'mType': 'SEARCH',
+          'inId': this.inId,
+          'province': this.province,
+          'city': this.city,
+          'block': this.block,
+          'period': this.period
+        })
+      } else {
+        // send data through REST API
+      }
+    },
+    clearForm () {
+      this.inId = ''
+      this.province = ''
+      this.city = ''
+      this.block = ''
+      this.period = ''
     }
   }
 }
 </script>
 
-<style scoped>
-.zip-input input {
-  height: 20px
+<style>
+.myClass input.el-input__inner {
+    border-radius:15px!important;
 }
+.dialog-input-text >>> .el-input__inner {
+  -web-kit-appearance: none;
+  -moz-appearance: none;
+  font-size: 1.4em;
+  height: 2.9em;
+  border-radius: 4px;
+  border: 1px solid #b6d8f1;
+  color: #6a6f77;
+  outline: 0;
+}
+</style>
+<style scope>
 </style>
