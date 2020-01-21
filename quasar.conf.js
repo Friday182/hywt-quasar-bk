@@ -8,8 +8,7 @@ module.exports = function (ctx) {
     boot: [
       'i18n',
       'axios',
-      'apollo',
-      'elementui'
+      'apollo'
     ],
 
     css: [
@@ -81,7 +80,6 @@ module.exports = function (ctx) {
         'QRouteTab',
         'QScrollArea',
         'QSeparator',
-        'QSelect',
         'QSpace',
         'QSplitter',
         'QSpinnerHourglass',
@@ -144,7 +142,7 @@ module.exports = function (ctx) {
     devServer: {
       // https: true,
       host: 'localhost',
-      port: 8089,
+      port: 8080,
       open: true // opens browser window automatically
     },
 
