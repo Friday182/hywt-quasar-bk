@@ -75,7 +75,7 @@
           dense
           color="primary"
           style="font: 100% Cursive"
-          @click="selected()"
+          @click="search()"
         />
         <q-btn
           class="q-ml-sm"
@@ -102,6 +102,7 @@ export default {
       city: '',
       province: '',
       block: '',
+      deviceid: '',
       provinceOptions: [
         { value: '选项1', label: '新疆' },
         { value: '选项2', label: '甘肃' },
@@ -147,17 +148,22 @@ export default {
     }
   },
   methods: {
-    selected () {
+    search () {
       console.log('start search ...', this.period)
       if (sessionStorage.getItem('ws-status') === 'OK') {
-        sendWSPush({
-          'mType': 'SEARCH',
-          'inId': this.inId,
-          'province': this.province,
-          'city': this.city,
-          'block': this.block,
-          'period': this.period
-        })
+        let msg = {
+          'sq': 0,
+          'type': 'SEARCH',
+          'data': {
+            'id': this.inId,
+            'deviceid': '',
+            'block': this.block,
+            'period': this.period
+          },
+          'from': 'ws-id',
+          'token': localStorage.getItem('access_token')
+        }
+        sendWSPush(msg)
       } else {
         // send data through REST API
       }

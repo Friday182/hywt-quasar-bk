@@ -96,12 +96,10 @@ export default {
       info: '',
       name: '',
       id: '',
-      selDatetime: '',
       pickerOptions: {
         shortcuts: [{
           text: '今天',
           onClick (picker) {
-            this.selDatetime = JSON.stringify(Date())
             picker.$emit('pick', new Date())
           }
         }, {
@@ -109,7 +107,6 @@ export default {
           onClick (picker) {
             const date = new Date()
             date.setTime(date.getTime() - 3600 * 1000 * 24)
-            this.selDatetime = JSON.stringify(date)
             picker.$emit('pick', date)
           }
         }, {
@@ -117,7 +114,6 @@ export default {
           onClick (picker) {
             const date = new Date()
             date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-            this.selDatetime = JSON.stringify(date)
             picker.$emit('pick', date)
           }
         }]

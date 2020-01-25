@@ -74,9 +74,14 @@ export function oncloseWS () {
   console.log('websocket已断开')
 }
 export function sendPing () {
-  Socket.send('ping')
   setIntervalWesocketPush = setInterval(() => {
-    Socket.send('ping')
+    Socket.send(JSON.stringify({
+      'sq': 0,
+      'type': 'HEARTBEAT',
+      'data': 'ping',
+      'from': 'ws-id',
+      'token': 'ws-id'
+    }))
     console.log('sending ping ...')
-  }, 5000)
+  }, 30000)
 }
